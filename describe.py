@@ -6,7 +6,7 @@ import sys
 import csv
 
 from tools import is_number
-from math import count, min, max, mean, quantile, std
+from ft_math import count, min, max, mean, quantile, std
 from matrix import transpose
 
 
