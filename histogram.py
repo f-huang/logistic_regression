@@ -26,25 +26,17 @@ def show_histogram(marks):
 	ax = axes.flatten()
 	index = 0
 	for discipline, values in marks.items():
-		print(discipline, ":")
-		print("\n".join("\t%s: %s"%(house, value) for house, value in values.items()))
 		for house, average in values.items():
-			ax[index].hist(average, label=house)
+			ax[index].hist(average, label=house, bins=20, alpha=0.5)
 			ax[index].set_title(discipline)
 		index += 1
-	plt.legend(loc="best")
+	handles, labels = ax[0].get_legend_handles_labels()
+	plt.legend(handles, labels, loc="best")
 	plt.show()
 
 
 
 def get_student_average_marks(disciplines, students_per_house):
-	# marks = {}
-	# for house, students in students_per_houses.items():
-	# 	marks_per_house = transpose(students)
-	# 	marks[house] = [mean([float(mark) if mark else 0.0 for mark in discipline]) for discipline in marks_per_house]
-	# for house, averages in marks.items():
-	# 	print("{}: {}\n".format(house, averages))
-	# 	plt.hist(averages, label=house)
 	marks = {}
 	for house, students in students_per_house.items():
 		for index, discipline in enumerate(disciplines):
@@ -64,13 +56,13 @@ def sort_marks_per_discipline(disciplines, students_per_house):
 	for house, students in students_per_house.items():
 		for index, discipline in enumerate(disciplines):
 			marks_per_discipline = transpose(students)
-			values = [mark for mark in marks_per_discipline]
+			values = [float(mark) if mark else 0.0 for mark in marks_per_discipline[index]]
 			if disciplines[index] not in marks:
-				marks[disciplines[index]] = values
+				marks[disciplines[index]] = {house: values}
 			else:
-				list = marks[disciplines[index]]
-				list.extend(values)
-				marks[disciplines[index]] = list
+				dictionnary = marks[disciplines[index]]
+				dictionnary[house] = values
+				marks[disciplines[index]] = dictionnary
 	return marks
 
 
@@ -89,6 +81,6 @@ if __name__ == "__main__":
 	dataset = read_file(sys.argv[1])
 	disciplines = [feature[0] for feature in transpose(dataset)[6:]]
 	students = sort_student_per_house(dataset)
-	# marks = sort_marks_per_discipline(disciplines, students)
-	marks = get_student_average_marks(disciplines, students)
+	marks = sort_marks_per_discipline(disciplines, students)
+	# marks = get_student_average_marks(disciplines, students)
 	show_histogram(marks)
