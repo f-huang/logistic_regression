@@ -25,7 +25,7 @@ def read_file(filename):
 def standardize_dataset(dataset):
 	ret = []
 	for row in dataset:
-		if is_number(row[1]):
+		if row[0] != "Index" and is_number(row[1]):
 			ret.append([row[0]] + [float(value) if value else 0.0 for value in row[1:]])
 	return ret
 
