@@ -7,7 +7,6 @@ import csv
 import matplotlib.pyplot as plt
 
 from matrix import transpose
-from ft_math import mean
 
 def read_file(filename):
 	try:
@@ -33,22 +32,6 @@ def show_histogram(marks):
 	handles, labels = ax[0].get_legend_handles_labels()
 	plt.legend(handles, labels, loc="best")
 	plt.show()
-
-
-
-def get_student_average_marks(disciplines, students_per_house):
-	marks = {}
-	for house, students in students_per_house.items():
-		for index, discipline in enumerate(disciplines):
-			marks_per_house = transpose(students)
-			values = mean([float(mark) if mark else 0.0 for mark in marks_per_house[index]])
-			if disciplines[index] not in marks:
-				marks[disciplines[index]] = {house: values}
-			else:
-				dictionnary = marks[disciplines[index]]
-				dictionnary[house] = values
-				marks[disciplines[index]] = dictionnary
-	return marks
 
 
 def sort_marks_per_discipline(disciplines, students_per_house):
@@ -82,5 +65,4 @@ if __name__ == "__main__":
 	disciplines = [feature[0] for feature in transpose(dataset)[6:]]
 	students = sort_student_per_house(dataset)
 	marks = sort_marks_per_discipline(disciplines, students)
-	# marks = get_student_average_marks(disciplines, students)
 	show_histogram(marks)
