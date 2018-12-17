@@ -5,21 +5,9 @@
 import sys
 import csv
 
-from tools import is_number
+from tools import is_number, read_file
 from ft_math import count, min, max, mean, quantile, std
 from matrix import transpose
-
-
-def read_file(filename):
-	try:
-		with open(filename, 'r') as f:
-			reader = csv.reader(f, delimiter=',')
-			# next(reader)
-			dataset = [row for row in reader]
-			return dataset
-	except IOError:
-		print("Cannot read this file: {}".format(filename))
-		sys.exit(-1)
 
 
 def standardize_dataset(dataset):

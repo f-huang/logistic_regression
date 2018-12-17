@@ -3,23 +3,11 @@
 
 
 import sys
-import csv
 import matplotlib.pyplot as plt
 
 from matrix import transpose
-from tools import list_to_dict
-
-def read_file(filename):
-	try:
-		with open(filename, 'r') as f:
-			reader = csv.reader(f, delimiter=',')
-			# next(reader)
-			dataset = [row for row in reader]
-			return dataset
-	except IOError:
-		print("Cannot read this file: {}".format(filename))
-		sys.exit(-1)
-
+from hp_tools import sort_student_per_house, sort_marks_per_discipline, filter_by_features
+from tools import list_to_dict, read_file
 
 def show_histogram(marks):
 	fig, axes = plt.subplots(nrows=5, ncols=3)
@@ -33,29 +21,6 @@ def show_histogram(marks):
 	handles, labels = ax[0].get_legend_handles_labels()
 	plt.legend(handles, labels, loc="best")
 	plt.show()
-
-
-def sort_marks_per_discipline(disciplines, students_per_house):
-	marks = {}
-	for house, students in students_per_house.items():
-		for index, discipline in enumerate(disciplines):
-			marks_per_discipline = transpose(students)
-			values = [float(mark) if mark else 0.0 for mark in marks_per_discipline[index]]
-			if disciplines[index] not in marks:
-				marks[disciplines[index]] = {house: values}
-			else:
-				dictionnary = marks[disciplines[index]]
-				dictionnary[house] = values
-				marks[disciplines[index]] = dictionnary
-	return marks
-
-
-def sort_student_per_house(dataset):
-	houses = ["Hufflepuff", "Slytherin", "Gryffindor", "Ravenclaw"]
-	return {
-		house: [student[6:] for student in dataset if student[1] == house]
-		for house in houses
-	}
 
 
 if __name__ == "__main__":
