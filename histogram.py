@@ -7,6 +7,7 @@ import csv
 import matplotlib.pyplot as plt
 
 from matrix import transpose
+from tools import list_to_dict
 
 def read_file(filename):
 	try:
@@ -62,7 +63,10 @@ if __name__ == "__main__":
 		print("usage: {} <csv_file>".format(__file__))
 		sys.exit(-1)
 	dataset = read_file(sys.argv[1])
-	disciplines = [feature[0] for feature in transpose(dataset)[6:]]
+	dataset_dict = list_to_dict(transpose(dataset))
+	if not any(dataset_dict['Hogwarts House']):
+		print("`Hogwarts House` column empty")
+		exit(1)
 	students = sort_student_per_house(dataset)
-	marks = sort_marks_per_discipline(disciplines, students)
+	marks = sort_marks_per_discipline([*dataset_dict.keys()][6:], students)
 	show_histogram(marks)
