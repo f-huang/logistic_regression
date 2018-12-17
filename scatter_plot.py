@@ -13,7 +13,6 @@ from matrix import transpose
 
 def show_plot(marks):
 	combinations = list(itertools.combinations(marks, 2))
-	print(marks.keys())
 	fig, axes = plt.subplots(nrows=4, ncols=math.ceil(len(combinations) / 4), figsize=(25, 10))
 	fig.canvas.set_window_title("Look-alike features")
 	ax = axes.flatten()
