@@ -6,7 +6,7 @@ import sys
 import matplotlib.pyplot as plt
 
 from matrix import transpose
-from hp_tools import sort_student_per_house, sort_marks_per_discipline, filter_by_features
+from hp_tools import sort_student_per_house, sort_marks_per_discipline
 from tools import list_to_dict, read_file
 
 def show_histogram(marks):
