@@ -13,17 +13,20 @@ from matrix import transpose
 
 def show_plot(marks):
 	combinations = list(itertools.combinations(marks, 2))
-	fig, axes = plt.subplots(nrows=4, ncols=math.ceil(len(combinations) / 4), figsize=(25, 10))
+	fig, axes = plt.subplots(nrows=6, ncols=math.ceil(len(combinations) / 6), figsize=(25, 12))
 	fig.canvas.set_window_title("Look-alike features")
 	ax = axes.flatten()
 	for index, combination in enumerate(combinations):
 		ax[index].set_ylabel(combination[0])
 		ax[index].set_xlabel(combination[1])
+		ax[index].xaxis.set_ticklabels([])
+		ax[index].yaxis.set_ticklabels([])
 		for y_house, y_values in marks[combination[0]].items():
 			for x_house, x_values in marks[combination[1]].items():
 				if x_house == y_house:
 					ax[index].scatter(x_values, y_values, label=y_house, alpha=0.5)
 	handles, labels = ax[0].get_legend_handles_labels()
+	plt.tight_layout()
 	plt.legend(handles, labels, loc="best")
 	plt.show(fig)
 

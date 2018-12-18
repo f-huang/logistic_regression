@@ -21,10 +21,12 @@ def get_cartesian_set(list, repeat):
 
 def show_pair_plot(marks):
 	set = get_cartesian_set(marks, 2)
-	fig, axes = plt.subplots(nrows=math.ceil(len(set) / 13), ncols=13, figsize=(25, 10))
+	fig, axes = plt.subplots(nrows=math.ceil(len(set) / 13), ncols=13, figsize=(25, 12))
 	fig.canvas.set_window_title("Scatter plot matrix")
 	ax = axes.flatten()
 	for index, item in enumerate(set):
+		ax[index].xaxis.set_ticklabels([])
+		ax[index].yaxis.set_ticklabels([])
 		if index % 13 == 0:
 			ax[index].set_ylabel(item[0])
 		if index > (len(set) / 12):
@@ -38,6 +40,7 @@ def show_pair_plot(marks):
 					if x_house == y_house:
 						ax[index].scatter(x_values, y_values, label=y_house, alpha=0.5)
 	handles, labels = ax[0].get_legend_handles_labels()
+	plt.tight_layout()
 	plt.legend(handles, labels, loc="best")
 	plt.show()
 
