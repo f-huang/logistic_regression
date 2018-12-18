@@ -44,3 +44,11 @@ def std(list):
 		raise ValueError("Argument `list` is empty")
 	average = mean(list)
 	return ((float(sum((element - average)**2 for element in list))) / max([len(list) - 1, 1])) ** (1/2.0)
+
+
+def normalize(value, max, min):
+	return (value - min) / (max - min)
+
+
+def unnormalize(value, max, min):
+	return value * (max - min) + min
