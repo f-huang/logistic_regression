@@ -28,10 +28,8 @@ def show_histogram(marks):
 
 
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
-		print("usage: {} <csv_file>".format(__file__))
-		sys.exit(-1)
-	dataset_dict = list_to_dict(transpose(read_file(sys.argv[1])))
+	file = "dataset_train.csv"
+	dataset_dict = list_to_dict(transpose(read_file(file)))
 	if not any(dataset_dict['Hogwarts House']):
 		print("`Hogwarts House` column empty")
 		exit(1)

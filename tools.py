@@ -2,6 +2,7 @@
 
 import csv
 
+import sys
 from ft_math import max, min, normalize
 from matrix import transpose
 

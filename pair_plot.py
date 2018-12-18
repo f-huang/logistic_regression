@@ -46,10 +46,8 @@ def show_pair_plot(marks):
 
 
 if __name__ == "__main__":
-	if len(sys.argv) != 2:
-		print("usage: {} <csv_file>".format(__file__))
-		sys.exit(-1)
-	dataset_dict = list_to_dict(transpose(read_file(sys.argv[1])))
+	file = "dataset_train.csv"
+	dataset_dict = list_to_dict(transpose(read_file(file)))
 	dataset = normalize_dataset(dataset_dict)
 	students = sort_student_per_house(dataset)
 	marks = sort_marks_per_discipline([*dataset_dict.keys()][6:], students)
