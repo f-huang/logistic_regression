@@ -42,6 +42,29 @@ class Matrix:
 		return ret
 
 
+	def __mul__(self, other):
+		if isinstance(other, (int, float)):
+			return [[elem * other for elem in row] for row in self.rows]
+		elif isinstance(other, (Matrix, list)):
+			m2, n2 = other.get_size() if isinstance(other, Matrix) else (len(other), 1)
+			# if (isinstance(other, list)) or (n2 == 1 and m2 == self.n) or (self.n == 1 and self.n == m2):
+			# 	ret = Matrix(self.m, 1)
+			# 	for index, row in enumerate(self.rows):
+			# 		ret[index] = row * other[index]
+			# else:
+			if self.n == m2 or n2 == self.m:
+				ret = Matrix(self.m, self.n)
+				for x in range(self.m):
+					for y in range(other.m if isinstance(other, Matrix) else len(other)):
+						print(self.rows[x], other[y])
+						ret[x][y] = sum([a * b for a, b in zip(self.rows[x], other)])
+			else:
+				raise MatrixException("Matrixes' sizes do not correspond.")
+			return ret
+		else:
+			raise MatrixException("TypeError: expected Matrix, int or float type")
+
+
 	def __getitem__(self, index):
 		return self.rows[index]
 
