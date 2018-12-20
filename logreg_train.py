@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
-import sysimport math
+import sys
+import math
 
 from tools import read_file, list_to_dict, normalize_dataset
 from matrix import transpose
@@ -19,6 +20,10 @@ def delta(list, h):
 def get_sigmoid_function(z):
 	return 1 / (1 + math.exp(-z))
 
+
+def hypothesis(thetas, list_x):
+	g = get_sigmoid_function
+	return [x * theta for x in list_x for theta in thetas]
 
 def train(dataset):
 	thetas, learning_rate = [0.0] * len(dataset), 1.5
