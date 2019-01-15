@@ -3,11 +3,12 @@
 
 
 import sys
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from matrix import transpose
 from hp_tools import sort_student_per_house, sort_marks_per_discipline
-from tools import list_to_dict, read_file, normalize_dataset
+from tools import list_to_dict, read_file, normalize_dataset, normalize_df
 
 def show_histogram(marks):
 	fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(20, 12))
@@ -29,11 +30,14 @@ def show_histogram(marks):
 
 if __name__ == "__main__":
 	file = "dataset_train.csv"
-	dataset_dict = list_to_dict(transpose(read_file(file)))
-	if not any(dataset_dict['Hogwarts House']):
-		print("`Hogwarts House` column empty")
-		exit(1)
-	dataset = normalize_dataset(dataset_dict)
-	students = sort_student_per_house(dataset)
-	marks = sort_marks_per_discipline([*dataset_dict.keys()][6:], students)
-	show_histogram(marks)
+	dataset = read_file(file)
+	df = pd.DataFrame(dataset[1:], columns=dataset[0])
+	# dataset_dict = list_to_dict(transpose(read_file(file)))
+	# if not any(dataset_dict['Hogwarts House']):
+	# 	print("`Hogwarts House` column empty")
+	# 	exit(1)
+	df = normalize_df(df)
+	print(df)
+	# students = sort_student_per_house(dataset)
+	# marks = sort_marks_per_discipline([*dataset_dict.keys()][6:], students)
+	# show_histogram(marks)

@@ -3,6 +3,7 @@
 import csv
 
 import sys
+import pandas as pd
 from ft_math import max, min, normalize
 from matrix import transpose
 
@@ -60,3 +61,11 @@ def normalize_dataset(dict):
 		else:
 			dataset.append(values)
 	return transpose(dataset)
+
+
+def normalize_df(df):
+	for column, values in df.iteritems():
+		df[column] = normalize_list(df[column]) \
+		if len(list(filter(lambda item: isinstance(item, str), values))) == 0\
+		else df[column]
+	return df
