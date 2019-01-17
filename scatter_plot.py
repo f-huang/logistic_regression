@@ -4,38 +4,37 @@
 import sys
 import math
 import itertools
+import pandas as pd
 import matplotlib.pyplot as plt
 
-from tools import list_to_dict, read_file, normalize_dataset
-from hp_tools import sort_student_per_house, sort_marks_per_discipline
-from matrix import transpose
+from tools import read_file, normalize_dataset
+from hp_tools import get_houses, get_disciplines
 
 
-def show_plot(marks):
-	combinations = list(itertools.combinations(marks, 2))
+def show_plot(dataframes):
+	combinations = list(itertools.combinations(get_disciplines(), 2))
 	fig, axes = plt.subplots(nrows=6, ncols=math.ceil(len(combinations) / 6), figsize=(25, 12))
 	fig.canvas.set_window_title("Look-alike features")
 	ax = axes.flatten()
-	for index, combination in enumerate(combinations):
-		ax[index].set_ylabel(combination[0])
-		ax[index].set_xlabel(combination[1])
+	for index, (discipline_1, discipline_2) in enumerate(combinations):
+		ax[index].set_xlabel(discipline_1)
+		ax[index].set_ylabel(discipline_2)
 		ax[index].xaxis.set_ticklabels([])
 		ax[index].yaxis.set_ticklabels([])
-		for y_house, y_values in marks[combination[0]].items():
-			for x_house, x_values in marks[combination[1]].items():
-				if x_house == y_house:
-					ax[index].scatter(x_values, y_values, label=y_house, alpha=0.5)
+		[ax[index].scatter(dataframes[house][discipline_1],\
+			dataframes[house][discipline_2], label=house, alpha=0.5)
+			for house in get_houses()]
 	handles, labels = ax[0].get_legend_handles_labels()
-	plt.tight_layout()
 	plt.legend(handles, labels, loc="best")
 	plt.show(fig)
 
 
-
 if __name__ == "__main__":
 	file = "dataset_train.csv"
-	dataset_dict = list_to_dict(transpose(read_file(file)))
-	dataset = normalize_dataset(dataset_dict)
-	students = sort_student_per_house(dataset)
-	marks = sort_marks_per_discipline([*dataset_dict.keys()][6:], students)
-	show_plot(marks)
+	dataset = read_file(file)
+	df = pd.DataFrame(dataset[1:], columns=dataset[0])
+	dataframes = {
+		house: df[(df['Hogwarts House'] == house)]
+		for house in get_houses()
+	}
+	show_plot(dataframes)
