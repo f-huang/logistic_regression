@@ -41,7 +41,7 @@ def show_pair_plot(dataframes):
 
 
 if __name__ == "__main__":
-	file = "dataset_train.csv"
+	file = "res/dataset_train.csv"
 	dataset = read_file(file)
 	df = pd.DataFrame(dataset[1:], columns=dataset[0])
 	dataframes = {
