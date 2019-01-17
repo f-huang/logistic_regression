@@ -5,7 +5,6 @@ import csv
 import sys
 import pandas as pd
 from ft_math import max, min, normalize
-from matrix import transpose
 
 def is_number(string):
 	try:
@@ -51,16 +50,6 @@ def unnormalize_list(list):
 	maximum, minimum = (max(list), min(list))
 	return [unnormalize(item, maximum, minimum)\
 		if item and isinstance(item, (int, float)) else item for item in list]
-
-
-def normalize_dataset(dict):
-	dataset = []
-	for key, values in dict.items():
-		if len(list(filter(lambda item: isinstance(item, str), values))) == 0:
-			dataset.append(normalize_list(values))
-		else:
-			dataset.append(values)
-	return transpose(dataset)
 
 
 def normalize_df(df):

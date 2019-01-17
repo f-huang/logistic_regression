@@ -2,12 +2,11 @@
 #coding: utf-8
 
 
-import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from hp_tools import get_houses, get_disciplines
-from tools import list_to_dict, read_file, normalize_df
+from tools import read_file
 
 
 def show_histogram(dataframes):

@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 #coding: utf-8
 
-import sys
 import math
 import itertools
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from tools import read_file, normalize_dataset
+from tools import read_file
 from hp_tools import get_houses, get_disciplines
 
 
