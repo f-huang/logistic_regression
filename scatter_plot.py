@@ -21,9 +21,9 @@ def show_plot(dataframes):
 		ax[index].set_ylabel(discipline_2)
 		ax[index].xaxis.set_ticklabels([])
 		ax[index].yaxis.set_ticklabels([])
-		[ax[index].scatter(dataframes[house][discipline_1],\
-			dataframes[house][discipline_2], label=house, alpha=0.5)
-			for house in get_houses()]
+		[ax[index].scatter(dataframes[house][discipline_1], dataframes[house][discipline_2], label=house, alpha=0.5)
+			for house in get_houses()
+		]
 	handles, labels = ax[0].get_legend_handles_labels()
 	plt.legend(handles, labels, loc="best")
 	plt.show(fig)
