@@ -24,3 +24,23 @@ def sort_marks_per_discipline(disciplines, students_per_house):
 				dictionnary[house] = values
 				marks[disciplines[index]] = dictionnary
 	return marks
+
+def get_disciplines():
+	return [
+		'Arithmancy',
+		'Astronomy',
+		'Herbology',
+		'Defense Against the Dark Arts',
+		'Divination',
+		'Muggle Studies',
+		'Ancient Runes',
+		'History of Magic',
+		'Transfiguration',
+		'Potions',
+		'Care of Magical Creatures',
+		'Charms',
+		'Flying'
+	]
+
+def get_houses():
+	return ["Hufflepuff", "Slytherin", "Gryffindor", "Ravenclaw"]
