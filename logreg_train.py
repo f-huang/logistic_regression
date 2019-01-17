@@ -3,9 +3,10 @@
 
 import sys
 import math
-
-from tools import read_file, list_to_dict, normalize_dataset
-from matrix import transpose
+import numpy as np
+import pandas as pd
+from hp_tools import get_houses, get_disciplines
+from tools import read_file
 
 ## J(θ) = − (1/m) sum( yi log(hθ(xi)) + (1 − yi) log(1 − hθ(xi)))
 ## hθ(x) = g(θT x)
@@ -13,28 +14,45 @@ from matrix import transpose
 ## ∂ / ∂θj J(θ) =  1/m sum(hθ(xi) − yi)xij m i=1
 
 
-def delta(list, h):
-	return float(sum(h(x, y) for x, y in list) / len(list))
-
-
-def get_sigmoid_function(z):
+def sigmoid(z):
 	return 1 / (1 + math.exp(-z))
 
 
-def hypothesis(thetas, list_x):
-	g = get_sigmoid_function
-	return [x * theta for x in list_x for theta in thetas]
+def get_hypothesis_function(thetas):
+	def f(x):
+		return sigmoid(np.dot(thetas, x))
+	return f
 
-def train(dataset):
-	thetas, learning_rate = [0.0] * len(dataset), 1.5
+
+def derivative(df, house, discipline, h):
+	return float(sum([
+			(h([student[discipline] for discipline in get_disciplines()])\
+			- int(student['Hogwarts House'] == house)) * student[discipline]
+			for index, student in df.iterrows()
+		])) / len(df)
+
+
+def train(df):
+	discplines = get_disciplines()
+	thetas, learning_rate = dict.fromkeys(discplines, 0.0), 1.5
 	i, cost = 0, 100
-	# for index, row in enumerate(dataset):
-		# g = get_sigmoid_function(thetas[index] * x)
-		# thetas[index] -= learning_rate * delta(row, lambda x, y: (f(x)) - y * x)
+	while i < 1000:
+		for house in get_houses():
+			for index, student in df.iterrows():
+				h = get_hypothesis_function(list(thetas.values()))
+				for discipline in discplines:
+					thetas[discipline] -= learning_rate\
+					* derivative(df, house, discipline, h)
+		old_cost = cost
+		if abs(old_cost - cost) < 10e-11:
+			break
+		i += 1
+	return thetas
 
 
 if __name__ == "__main__":
-	file = "dataset_train.csv"
-	dataset_dict = list_to_dict(transpose(read_file(file)))
-	dataset = normalize_dataset(dataset_dict)
-	theta = train(dataset)
+	file = "res/dataset_train.csv"
+	dataset = read_file(file)
+	df = pd.DataFrame(dataset[1:], columns=dataset[0])
+	# print(len(df))
+	train(df)
