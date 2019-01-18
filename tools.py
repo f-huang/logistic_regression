@@ -4,7 +4,7 @@ import csv
 
 import sys
 import pandas as pd
-from ft_math import max, min, normalize
+from ft_math import max, min, normalize, unnormalize
 
 def is_number(string):
 	try:
@@ -28,13 +28,19 @@ def is_float(value):
 		return False
 
 
-def read_file(filename):
+def read_file(filename, ignore=False):
 	try:
 		with open(filename, 'r') as f:
 			reader = csv.reader(f, delimiter=',')
 			# next(reader)
-			dataset = [[float(item) if item and is_float(item) else (item if item else 0.0) for item in row] for row in reader]
-			return dataset
+			return (list(filter(lambda row: None not in row,
+				[[float(item) if is_float(item) else (item if item else None)
+					for item in row
+				] for row in reader]))) if ignore\
+				else [[float(item) if item and is_float(item)\
+					else (item if item else 0.0)
+					for item in row]
+				for row in reader]
 	except IOError:
 		print("Cannot read this file: {}".format(filename))
 		sys.exit(-1)
