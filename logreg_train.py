@@ -13,72 +13,96 @@ from tools import read_file, normalize_df
 ## g(z) = 1 / 1+e−z
 ## ∂ / ∂θj J(θ) =  1/m sum(hθ(xi) − yi)xij m i=1
 
-DISCIPLINES = [
-	# 'Astronomy',
-	# 'Herbology',
-	# 'Defense Against the Dark Arts',
-	# 'Divination',
-	# 'Muggle Studies',
-	# 'Ancient Runes',
-	# 'History of Magic',
-	# 'Transfiguration',
-	# 'Potions',
-	'Charms',
-	'Flying'
-]
+
+def accuracy(my_y, his_y):
+	diff = his_y - my_y
+	return 1 - (np.count_non_zero(diff)) / len(diff)
+
+
+def decision_boundary(probability):
+	return 1 if probability > 0.5 else 0
+
 
 def sigmoid(z):
-	return 1 / (1 + math.exp(-z))
+	'''
+	z: (m, 1)
+
+	Sigmoid = 1 / 1e(-z)
+	'''
+	return np.array([1 / (1 + math.exp(-x)) for x in z])
 
 
-def distance(df, g):
-	return float(sum(g(student) for index, student in df.iterrows())) / len(df)
+def predict(features, weights):
+	return sigmoid(np.dot(features, weights))
 
 
-def get_hypothesis_function(thetas):
-	thetas = np.array(thetas).reshape((1, len(thetas)))
-	def f(X):
-		X = np.array(X).reshape((len(X), 1))
-		return sigmoid(np.amax(X @ thetas))
-	return f
+def cost_function(X, y, weights):
+	'''
+	Using Cross-Entropy / Log Cross
+
+	X: (m, 1)
+	y: (m, 1)
+	weights: (n, 1)
+	Returns 1D matrix of predictions
+
+	Cost = (y * log(predictions) + (1-y)*log(1-predictions)) / len(X)
+	'''
+
+	predictions = predict(X, weights)
+	cost_1 = -y * np.log(predictions)
+	cost_2 = (1 - y) * np.log(1 - predictions)
+	return (cost_1 - cost_2).sum() / len(X)
 
 
-def derivative(df, house, discipline, h):
-	return distance(df, lambda student:
-		(h([student[discipline] for discipline in DISCIPLINES])\
-		- int(student['Hogwarts House'] == house)) * student[discipline])
+def update_weights(X, y, weights):
+	'''
+	X: (m, 1)
+	y: (m, 1)
+	weights: (n, 1)
+	'''
+	learning_rate = 12
+
+	predictions = predict(X, weights)
+	gradient = np.dot(X.T, predictions - y)
+	return weights - gradient / len(X) * learning_rate
 
 
-def cost_function(df, house, h):
-	error = [0] * len(df)
-	for index, student in df.iterrows():
-		y = int(student['Hogwarts House'] == house)
-		hx = h([student[discipline] for discipline in DISCIPLINES])
-		error[index] = y * math.log(hx) + (1 - y) * math.log(1 - hx)
-	return -float(sum(error)) / len(df)
+def train(X, y, current_train):
+	cost_history = []
+	weights = np.array([0.0] * len(X.columns))
+	yh = np.where(y == current_train, 1.0, 0.0)
+	for _ in range(1000):
+		weights = update_weights(X, yh, weights)
+		cost = cost_function(X, yh, weights)
+		cost_history.append(cost)
+	return {'weights': weights, 'cost_history': cost_history}
 
 
-def train(df):
-	thetas, learning_rate = dict.fromkeys(DISCIPLINES, 0.0), 100
-	i, cost = 0, dict.fromkeys(DISCIPLINES, 0.0)
-	old_cost = cost
-	while i < 10:
-		h = get_hypothesis_function(list(thetas.values()))
-		for house in get_houses():
-			for discipline in DISCIPLINES:
-				if old_cost != cost and abs(old_cost[discipline] - cost[discipline]) < 10e-8:
-					continue
-				thetas[discipline] -= learning_rate\
-				* derivative(df, house, discipline, h)
-		for discipline in DISCIPLINES:
-			cost[discipline] = cost_function(df, house, h)
-		print(thetas)
-		i += 1
-	return thetas
+def one_vs_all(df, label, features, all):
+	X = df.loc[:, features]
+	y = df[label]
+	ret = {key: None for key in all}
+	for one in all:
+		ret[one] = train(X, y, one)
 
 
 if __name__ == "__main__":
+
+	features = [
+		# 'Astronomy',
+		# 'Herbology',
+		# 'Defense Against the Dark Arts',
+		# 'Divination',
+		'Muggle Studies',
+		# 'Ancient Runes',
+		# 'History of Magic',
+		# 'Transfiguration',
+		# 'Potions',
+		'Charms',
+		'Flying'
+	]
+
 	file = "res/dataset_train.csv"
 	dataset = read_file(file, ignore=True)
 	df = normalize_df(pd.DataFrame(dataset[1:], columns=dataset[0]))
-	thetas = train(df)
+	one_vs_all(df, 'Hogwarts House', features, get_houses())
