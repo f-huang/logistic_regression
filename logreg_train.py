@@ -16,7 +16,7 @@ from tools import read_file, normalize_df
 
 def accuracy(my_y, his_y):
 	diff = his_y - my_y
-	return 1 - (np.count_non_zero(diff)) / len(diff)
+	return 1 - (np.count_nonzero(diff)) / len(diff)
 
 
 def decision_boundary(probability):
@@ -32,8 +32,8 @@ def sigmoid(z):
 	return np.array([1 / (1 + math.exp(-x)) for x in z])
 
 
-def predict(features, weights):
-	return sigmoid(np.dot(features, weights))
+def predict(X, weights):
+	return sigmoid(np.dot(X, weights))
 
 
 def cost_function(X, y, weights):
@@ -78,26 +78,39 @@ def train(X, y, current_train):
 	return {'weights': weights, 'cost_history': cost_history}
 
 
-def one_vs_all(df, label, features, all):
+def test(X_test, y_test, weights):
+	predictions = [decision_boundary(prob) for prob in predict(X_test, weights)]
+	return accuracy(predictions, y_test)
+
+def one_vs_all(df, y_label, features, all):
 	X = df.loc[:, features]
-	y = df[label]
+	X_test = X.sample(frac=0.3)
+	X_train = X.loc[X.index.difference(X_test.index.values)]
+	y_test, y_train = df.loc[X_test.index.values][y_label], df.loc[X_train.index.values][y_label]
+
 	ret = {key: None for key in all}
 	for one in all:
-		ret[one] = train(X, y, one)
+		ret[one] = train(X_train, y_train, one)
+
+	for one in all:
+		yh_test = np.where(y_test == one, 1, 0)
+		accuracy = test(X_test, yh_test, np.array(ret[one]['weights']))
+		print("for {}, accuracy of {}".format(one, accuracy))
+
 
 
 if __name__ == "__main__":
 
 	features = [
-		# 'Astronomy',
-		# 'Herbology',
-		# 'Defense Against the Dark Arts',
-		# 'Divination',
+		'Astronomy',
+		'Herbology',
+		'Defense Against the Dark Arts',
+		'Divination',
 		'Muggle Studies',
-		# 'Ancient Runes',
-		# 'History of Magic',
-		# 'Transfiguration',
-		# 'Potions',
+		'Ancient Runes',
+		'History of Magic',
+		'Transfiguration',
+		'Potions',
 		'Charms',
 		'Flying'
 	]
