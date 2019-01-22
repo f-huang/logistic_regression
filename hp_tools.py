@@ -19,3 +19,18 @@ def get_disciplines():
 
 def get_houses():
 	return ["Hufflepuff", "Slytherin", "Gryffindor", "Ravenclaw"]
+
+def get_features():
+	return [
+		'Astronomy',
+		'Herbology',
+		'Defense Against the Dark Arts',
+		'Divination',
+		'Muggle Studies',
+		'Ancient Runes',
+		'History of Magic',
+		'Transfiguration',
+		'Potions',
+		'Charms',
+		'Flying'
+	]

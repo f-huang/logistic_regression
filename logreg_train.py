@@ -5,13 +5,16 @@ import sys
 import math
 import numpy as np
 import pandas as pd
-from hp_tools import get_houses, get_disciplines
+from hp_tools import get_houses, get_disciplines, get_features
 from tools import read_file, normalize_df
 
 ## J(θ) = − (1/m) sum( yi log(hθ(xi)) + (1 − yi) log(1 − hθ(xi)))
 ## hθ(x) = g(θT x)
 ## g(z) = 1 / 1+e−z
 ## ∂ / ∂θj J(θ) =  1/m sum(hθ(xi) − yi)xij m i=1
+
+def save_weights_into(path, weights):
+	np.save(path, weights)
 
 
 def accuracy(my_y, his_y):
@@ -82,6 +85,7 @@ def test(X_test, y_test, weights):
 	predictions = [decision_boundary(prob) for prob in predict(X_test, weights)]
 	return accuracy(predictions, y_test)
 
+
 def one_vs_all(df, y_label, features, all):
 	X = df.loc[:, features]
 	X_test = X.sample(frac=0.3)
@@ -96,26 +100,15 @@ def one_vs_all(df, y_label, features, all):
 		yh_test = np.where(y_test == one, 1, 0)
 		accuracy = test(X_test, yh_test, np.array(ret[one]['weights']))
 		print("for {}, accuracy of {}".format(one, accuracy))
-
+	return [ret[one]['weights'] for one in all]
 
 
 if __name__ == "__main__":
 
-	features = [
-		'Astronomy',
-		'Herbology',
-		'Defense Against the Dark Arts',
-		'Divination',
-		'Muggle Studies',
-		'Ancient Runes',
-		'History of Magic',
-		'Transfiguration',
-		'Potions',
-		'Charms',
-		'Flying'
-	]
+	features = get_features()
 
 	file = "res/dataset_train.csv"
 	dataset = read_file(file, ignore=True)
 	df = normalize_df(pd.DataFrame(dataset[1:], columns=dataset[0]))
-	one_vs_all(df, 'Hogwarts House', features, get_houses())
+	weights = one_vs_all(df, 'Hogwarts House', features, get_houses())
+	save_weights_into("weights", weights)
