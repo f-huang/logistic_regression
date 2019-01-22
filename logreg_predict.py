@@ -1,42 +1,37 @@
 #!/usr/bin/env python3
 # coding: utf-8
 
+import sys
 import numpy as np
 import pandas as pd
-import math
 from tools import read_file, normalize_df
 from hp_tools import get_features, get_houses
-
-def predict(X, weights):
-	return sigmoid(np.dot(X, weights))
-
-def accuracy(my_y, his_y):
-	diff = his_y - my_y
-	return 1 - (np.count_nonzero(diff)) / len(diff)
+from LogisticRegressionOVA import LogisticRegressionOVA
 
 
-def sigmoid(z):
-	'''
-	z: (m, 1)
+def update_df(df, classifier):
+	all = get_houses()
+	X = df.loc[:, get_features()]
+	log_reg = LogisticRegressionOVA()
+	for i, one in enumerate(all):
+		predictions = log_reg.set_weights(classifier[i]).predict(X)
+		for index in np.where(predictions)[0]:
+			df.ix[index, "Hogwarts House"] = one
+	return log_reg
 
-	Sigmoid = 1 / 1e(-z)
-	'''
-	return np.array([1 / (1 + math.exp(-x)) for x in z])
 
+def load_classifier():
+	try:
+		classifier = [np.array(array) for array in np.load("classifier.npy")]
+		return classifier
+	except FileNotFoundError:
+		print("Error: Train first before predicting")
+		sys.exit(1)
 
-def decision_boundary(probability):
-	return 1 if probability > 0.5 else 0
 
 if __name__ == "__main__":
 	file = "res/dataset_test.csv"
-	y_label = "Hogwarts House"
 	dataset = read_file(file, ignore=False)
 	df = normalize_df(pd.DataFrame(dataset[1:], columns=dataset[0]))
-	weights = [np.array(array) for array in np.load("weights.npy")]
-	X = df.loc[:, get_features()]
-	for i, house in enumerate(get_houses()):
-		predictions = [decision_boundary(prob) for prob in predict(X, weights[i])]
-		indexes = np.where(predictions)[0]
-		for index in indexes:
-			df.ix[index, y_label] = house
-	df.to_csv("houses.csv", columns=[y_label], index_label="Index")
+	log_reg = update_df(df, load_classifier())
+	df.to_csv("houses.csv", columns=["Hogwarts House"], index_label="Index")
