@@ -9,6 +9,7 @@ from hp_tools import get_features
 
 def compare(sk_predictions):
 	my_predictions = pd.read_csv("houses.csv", index_col="Index")
+	## TODO: Compare both predictions
 
 if __name__ == "__main__":
 	features = get_features()

@@ -32,6 +32,7 @@ def load_classifier():
 if __name__ == "__main__":
 	file = "res/dataset_test.csv"
 	dataset = read_file(file, ignore=False)
+	## TODO preprocess data --> remove lines with blanks
 	df = normalize_df(pd.DataFrame(dataset[1:], columns=dataset[0]))
 	log_reg = update_df(df, load_classifier())
 	df.to_csv("houses.csv", columns=["Hogwarts House"], index_label="Index")
