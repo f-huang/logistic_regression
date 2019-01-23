@@ -28,8 +28,8 @@ class LogisticRegressionOVA():
 
 
 	def __accuracy(self, my_y, his_y):
-		diff = his_y - my_y
-		return 1 - (np.count_nonzero(diff)) / len(diff)
+		diff = his_y == my_y
+		return (np.count_nonzero(diff) / len(diff))
 
 
 	def __decision_boundary(self, probability):
@@ -121,10 +121,7 @@ class LogisticRegressionOVA():
 	def score(self, X, y, one_vs_all=None):
 		if one_vs_all:
 			predictions = self.predict(X, one_vs_all)
-			return [
-				self.__accuracy(predictions[i], np.where(y == one, 1, 0))
-				for i, one in enumerate(one_vs_all)
-			]
+			return self.__accuracy(predictions, y)
 		else:
 			predictions = self.predict(X)
 			return self.__accuracy(predictions, y)
