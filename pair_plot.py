@@ -7,7 +7,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from hp_tools import get_houses, get_disciplines
-from tools import read_file
 
 
 def get_cartesian_set(list, repeat):
@@ -42,8 +41,7 @@ def show_pair_plot(dataframes):
 
 if __name__ == "__main__":
 	file = "res/dataset_train.csv"
-	dataset = read_file(file)
-	df = pd.DataFrame(dataset[1:], columns=dataset[0])
+	df = pd.read_csv(file, index_col="Index")
 	dataframes = {
 		house: df[(df['Hogwarts House'] == house)]
 		for house in get_houses()
