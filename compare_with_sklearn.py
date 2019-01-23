@@ -9,8 +9,10 @@ from hp_tools import get_features
 
 def compare(sk_predictions):
 	my_predictions = pd.read_csv("houses.csv", index_col="Index")
-	## TODO: Compare both predictions
-	# print(my_predictions != sk_predictions)
+	diff = (my_predictions == sk_predictions)
+	n_rows_identical = len(diff[diff["Hogwarts House"] == True])
+	print("Accuracy = {}%".format(n_rows_identical / len(diff) * 100))
+
 
 if __name__ == "__main__":
 	features = get_features()
@@ -24,6 +26,6 @@ if __name__ == "__main__":
 	X_test = sc.fit_transform(df_test.loc[:, features])
 
 	predictions = OneVsOneClassifier(LinearSVC()).fit(X_train, y_train).predict(X_test)
-	sk_predictions = pd.DataFrame(predictions, columns=["Hogwarts House"])
+	sk_predictions = pd.DataFrame(predictions, index=df_test.index, columns=["Hogwarts House"])
+	sk_predictions.to_csv("sk_houses.csv", index_label="Index", columns=["Hogwarts House"])
 	compare(sk_predictions)
-	sk_predictions.to_csv("sk_houses.csv", columns=["Hogwarts House"], index_label="Index")
