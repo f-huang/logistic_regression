@@ -5,7 +5,7 @@
 import sys
 import csv
 import pandas as pd
-from tools import is_number, read_file
+from tools import is_number
 from ft_math import count, min, max, mean, quantile, std
 
 
@@ -26,6 +26,5 @@ if __name__ == "__main__":
 		print("usage: {} <csv_file>".format(__file__))
 		sys.exit(-1)
 	filename = sys.argv[1]
-	dataset = read_file(filename)
-	df = pd.DataFrame(dataset[1:], columns=dataset[0])
+	df = pd.read_csv(filename, index_col="Index").dropna(how='all', axis=1).dropna()
 	output(df[[c for c in df.columns if is_number(df[c][0])]])
