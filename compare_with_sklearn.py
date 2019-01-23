@@ -3,15 +3,10 @@
 from sklearn.multiclass import OneVsOneClassifier
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import accuracy_score
 
 import pandas as pd
 from hp_tools import get_features
-
-def compare(sk_predictions):
-	my_predictions = pd.read_csv("houses.csv", index_col="Index")
-	diff = (my_predictions == sk_predictions)
-	n_rows_identical = len(diff[diff["Hogwarts House"] == True])
-	print("Accuracy = {}%".format(round(float(n_rows_identical / len(diff)), 3)  * 100))
 
 
 if __name__ == "__main__":
@@ -26,6 +21,9 @@ if __name__ == "__main__":
 	X_test = sc.fit_transform(df_test.loc[:, features])
 
 	predictions = OneVsOneClassifier(LinearSVC()).fit(X_train, y_train).predict(X_test)
+	my_predictions = pd.read_csv("houses.csv", index_col="Index")
 	sk_predictions = pd.DataFrame(predictions, index=df_test.index, columns=["Hogwarts House"])
+
 	sk_predictions.to_csv("sk_houses.csv", index_label="Index", columns=["Hogwarts House"])
-	compare(sk_predictions)
+
+	print("Accuracy = {}%".format(accuracy_score(sk_predictions, my_predictions) * 100))
