@@ -105,10 +105,15 @@ class LogisticRegressionOVA():
 		if (one_vs_all == None and len(self.weights) == 0) or (one_vs_all and len(self.classifier) == 0):
 			raise Error("Fit first then predict.")
 		if one_vs_all:
-			return [
-				[self.__decision_boundary(prob) for prob in self.__predict(X, self.classifier[i])]
+			predictions = {
+				one: [prob for prob in self.__predict(X, self.classifier[i])]
 				for i, one in enumerate(one_vs_all)
-			]
+			}
+			ret = []
+			for i in range(len(X)):
+				values = [predictions[one][i] for one in one_vs_all]
+				ret += [one_vs_all[max_index] for max_index in [np.argmax(values)]]
+			return ret
 		else:
 			return [self.__decision_boundary(prob) for prob in self.__predict(X, self.weights)]
 

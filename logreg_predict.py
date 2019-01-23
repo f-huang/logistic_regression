@@ -12,11 +12,9 @@ from LogisticRegressionOVA import LogisticRegressionOVA
 def update_df(df, classifier):
 	all = get_houses()
 	X = df.loc[:, get_features()]
-	log_reg = LogisticRegressionOVA()
-	for i, one in enumerate(all):
-		predictions = log_reg.set_weights(classifier[i]).predict(X)
-		for index in np.where(predictions)[0]:
-			df.loc[index, "Hogwarts House"] = one
+	log_reg = LogisticRegressionOVA().set_classifier(classifier)
+	predictions = log_reg.predict(X, one_vs_all=all)
+	df["Hogwarts House"] = predictions
 	return log_reg
 
 
