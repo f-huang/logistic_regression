@@ -23,4 +23,4 @@ if __name__ == "__main__":
 	log_reg = LogisticRegressionOVA().fit(X_train, y_train, one_vs_all=all)
 	log_reg.save_classifier_into("classifier.npy")
 	score = log_reg.score(X_test, y_test, one_vs_all=all)
-	print("My score = {}".format(score))
+	print("My score = {}".format(round(score, 2)))
