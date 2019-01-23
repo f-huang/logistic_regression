@@ -6,8 +6,8 @@ import pandas as pd
 
 class LogisticRegressionOVA():
 
-	def __init__(self, n_iter = 1000, learning_rate = 12):
-		self.n_iter = n_iter
+	def __init__(self, max_iter = 3000, learning_rate = 12):
+		self.max_iter = max_iter
 		self.learning_rate = learning_rate
 		self.cost_history = []
 		self.weights = []
@@ -66,10 +66,14 @@ class LogisticRegressionOVA():
 
 
 	def __fit(self, X, y):
-		for _ in range(self.n_iter):
+		cost = 1
+		i = 0
+		while (i == 0 or abs(self.cost_history[-1] - cost) > 10e-7)\
+		and i < self.max_iter:
+			self.cost_history.append(cost)
 			self.__update_weights(X, y)
 			cost = self.__cost_function(X, y)
-			self.cost_history.append(cost)
+			i += 1
 		return self.weights
 
 
