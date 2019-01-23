@@ -11,7 +11,7 @@ def compare(sk_predictions):
 	my_predictions = pd.read_csv("houses.csv", index_col="Index")
 	diff = (my_predictions == sk_predictions)
 	n_rows_identical = len(diff[diff["Hogwarts House"] == True])
-	print("Accuracy = {}%".format(n_rows_identical / len(diff) * 100))
+	print("Accuracy = {}%".format(round(float(n_rows_identical / len(diff)), 3)  * 100))
 
 
 if __name__ == "__main__":
