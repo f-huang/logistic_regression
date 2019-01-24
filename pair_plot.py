@@ -26,12 +26,12 @@ def show_pair_plot(dataframes):
 		ax[index].xaxis.set_ticklabels([])
 		ax[index].yaxis.set_ticklabels([])
 		if index % 13 == 0:
-			ax[index].set_ylabel(discipline_2)
+			ax[index].set_ylabel(discipline_1)
 		if index > (len(cartesian_set) / 12):
-			ax[index].set_xlabel(discipline_1)
-		[ax[index].hist(dataframes[house][discipline_1], bins = 20, alpha = 0.5) if discipline_1 == discipline_2
-			else\
-			ax[index].scatter(dataframes[house][discipline_1], dataframes[house][discipline_2], label = house, alpha = 0.5)
+			ax[index].set_xlabel(discipline_2)
+		[ax[index].hist(dataframes[house][discipline_1], bins=20, alpha=0.5, label=house)\
+				if discipline_1 == discipline_2 else\
+				ax[index].scatter(dataframes[house][discipline_1], dataframes[house][discipline_2], label=house, alpha=0.5)
 			for house in get_houses()
 		]
 	handles, labels = ax[0].get_legend_handles_labels()
