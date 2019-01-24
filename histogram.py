@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from hp_tools import get_houses, get_disciplines
-
+from tools import preprocess
 
 def show_histogram(dataframes):
 	fig, axes = plt.subplots(nrows=5, ncols=3, figsize=(20, 12))
@@ -26,7 +26,7 @@ def show_histogram(dataframes):
 
 if __name__ == "__main__":
 	file = "res/dataset_train.csv"
-	df = pd.read_csv(file, index_col="Index")
+	df = preprocess(pd.read_csv(file, index_col="Index"))
 	dataframes = {
 		house: df[(df['Hogwarts House'] == house)]
 		for house in get_houses()
