@@ -3,6 +3,7 @@
 import csv
 
 import sys
+import numpy as np
 import pandas as pd
 from ft_math import max, min, mean, normalize
 
@@ -40,6 +41,7 @@ def convert_nan(df, converter=0.0):
 
 
 def preprocess(df, drop_columns=[]):
+	df.drop(drop_columns, axis=1, inplace=True)
 	dropped = df.dropna()
-	means = {c: mean(dropped[c]) for c in dropped.columns}
-	return normalize_df(convert_nan(df.drop(drop_columns, axis=1), means))
+	means = {c: mean(dropped[c]) for c in dropped.columns if is_number(dropped[c][0])}
+	return normalize_df(convert_nan(df, means))
