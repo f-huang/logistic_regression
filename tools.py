@@ -4,7 +4,7 @@ import csv
 
 import sys
 import pandas as pd
-from ft_math import max, min, normalize, unnormalize
+from ft_math import max, min, mean, normalize
 
 def is_number(string):
 	try:
@@ -35,5 +35,11 @@ def normalize_df(df):
 	return df
 
 
-def preprocess(df, converter=lambda x: x, drop_columns=[]):
-	return normalize_df(df.drop(drop_columns, axis=1).dropna())
+def convert_nan(df, converter=0.0):
+	return df.fillna(converter)
+
+
+def preprocess(df, drop_columns=[]):
+	dropped = df.dropna()
+	means = {c: mean(dropped[c]) for c in dropped.columns}
+	return normalize_df(convert_nan(df.drop(drop_columns, axis=1), means))
