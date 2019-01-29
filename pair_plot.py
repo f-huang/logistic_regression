@@ -27,7 +27,7 @@ def show_pair_plot(dataframes):
 		ax[index].yaxis.set_ticklabels([])
 		if index % 13 == 0:
 			ax[index].set_ylabel(discipline_1)
-		if index > (len(cartesian_set) / 12):
+		if index > (len(cartesian_set) - 14):
 			ax[index].set_xlabel(discipline_2)
 		[ax[index].hist(dataframes[house][discipline_1], bins=20, alpha=0.5, label=house)\
 				if discipline_1 == discipline_2 else\
